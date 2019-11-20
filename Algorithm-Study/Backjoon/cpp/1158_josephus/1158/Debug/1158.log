@@ -1,0 +1,5 @@
+﻿  1158.cpp
+c:\users\kkss2\desktop\백준\cpp\1158\1158\1158.cpp(49): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\kkss2\desktop\백준\cpp\1158\1158\1158.cpp(64): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  1158.vcxproj -> C:\Users\kkss2\Desktop\백준\cpp\1158\Debug\1158.exe
+  1158.vcxproj -> C:\Users\kkss2\Desktop\백준\cpp\1158\Debug\1158.pdb (Partial PDB)
