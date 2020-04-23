@@ -14,26 +14,26 @@ for i in range(N):
 
 numList.sort()
 
-tempList = []
-for i in range(N - 1):
-    tempList.append(numList[i + 1] - numList[i])
+tempGcd = numList[1] - numList[0]
 
-if len(tempList) == 1:
-    tempGCD = tempList[0]
-else:
-    tempGCD = gcd(tempList[0], tempList[1])
-for i in range(2, len(tempList)):
-    tempGCD = gcd(tempGCD, tempList[i])
+for i in range(1, N):
+    tempGcd = gcd(tempGcd, numList[i] - numList[i - 1])
 
-answer = []
+resultList = []
+i = 2
+while i ** 2 <= tempGcd:
+    if tempGcd % i == 0:
+        if i not in resultList:
+            resultList.append(i)
+        if tempGcd // i not in resultList:
+            resultList.append(tempGcd // i)
+    i += 1
 
-for i in range(2, tempGCD // 2):
-    if tempGCD % i == 0:
-        if i ** 2 == tempGCD:
-            answer.append(str(i))
-        else:
-            answer.append(str(i))
-            answer.append(str(tempGCD // i))
-answer.append(str(tempGCD))
+resultList.sort()
+resultList.append(tempGcd)
+answer = ""
+for num in resultList:
+    answer += str(num) + " "
 
-print(' '.join(answer))
+
+print(answer[:-1])
