@@ -678,9 +678,232 @@ doSomething(with: .silver) // 함수 정의에 타입 어노테이션이 있기 
 
 Enum은 연관 값(Associated)을 가질 수 있습니다. 아래 예시는 어떤 API에 대한 에러를 정의한 것인데요. ```invalidParameter``` 케이스는 필드 이름과 메시지를 가지도록 정의되었습니다.
 
-```enum NetworkError {
+```
+enum NetworkError {
 	case invalidParameter (String, String)
 	case timeout
 }
 
 let error : NetworkError = .invalidParameter ("email", "이메일 형식이 올바르지 않습니다.")
+```
+
+이 값을 꺼내올 수 있는 방법으로는  `if-case` 또는 `switch`를 활용하는 방법이 있습니다.
+
+```
+if case .invalidParameter (let field, let message) = error {
+    print (field) // email
+    print (message) // 이메일 형식이 올바르지 않습니다.
+}
+
+switch error {
+    case .invalidParameter (let field, let message) :
+        print (field) // email
+        print (message) // 이메일 형식이 올바르지 않습니다.
+
+    default :
+        break
+}
+```
+
+### 프로토콜 (Protocol)
+
+프로토콜 (Protocol) 은 인터페이스 입니다. 최소한으로 가져야 할 속성이나 메서드를 정의합니다. 구현은 하지 않습니다. 정의만 합니다.
+
+```
+/// 전송가능한 인터페이스를 정의합니다
+
+protocol Sendable {
+    var from : String? { get }
+    var to : String { get } 
+
+    func send()
+}
+```
+
+클래스와 구조체에 프로토콜을 적용 (Conform) 시킬 수 있습니다. 프로토콜을 적용하면, 프로토콜에서 정의한 속성과 메서드를 모두 구현해야 합니다.
+
+```
+struct Mail: Sendable {
+    var from : String?
+    var to : String
+
+    fun send() {
+        print ("Send a mail from \(self.from) to \(self.to)")
+    }
+}
+
+struct Feedback : Sendable {
+    var from : String? {
+        return nil // 피드백은 무조건 익명으로 보냅니다.
+    }
+    var to : String
+
+    fun send() {
+        print ("Send a feedback to \(self.to)")
+    }
+}
+```
+
+프로토콜은 마치 추상클래스처럼 사용될 수 있습니다.
+
+```
+func sendAnything (_ sendable: Sendable) {
+    sendable.send()
+}
+
+let mail = Mail (from : "ljh28891004@gmnail.com, to : "jeon@stlesha.re")
+sendAnything (mail)
+
+let feedback = Feedback (to: "ljh28891004@gmail.com")
+sendAnything (feedback)
+```
+
+`sendAnything()` 함수는 `Sendable` 타입을 파라미터로 받습니다. `Mail` 과 `Feedback` 은 엄연히 다른 타입이지만, 모두 `Sendable`을 따르고 있으므로 `sendAnything()` 함수에 전달될 수 있습니다. 그리고, `Sendable` 에서는 `send()` 함수를 정의하고 있기 때문에 호출이 가능합니다.
+
+프로토콜은 또다른 프로토콜을 따를 수 있습니다.
+
+```
+protocol Messagable {
+    var message : String? { get }
+}
+
+protocal Sendable : Messagable {
+    // ...
+}
+```
+
+`Sendable`은 `Messagable`을 기본적으로 따르는 프로토콜입니다. 따라서, `Sendable` 을 적용하려면 `var message : String? { get }`을 정의해주어야 합니다.
+
+### Any 와 AnyObject
+
+`Any`는 모든 타입에 대응합니다. `AnyObject`는 모든 객체 (Object)에 대응합니다.
+
+```
+let anyNumber : Any = 10
+let anyString : Any = "Hi"
+
+let anyInstance : AnyObject = Dob()
+```
+
+`Any` 와 `AnyObject`는 프로토콜입니다. Swift에서 사용 가능한 모든 타입은 `Any`를 따르도록 설계되었고, 모든 클래스들에는 `AnyObject` 프로토콜이 적용되어 있습니다.
+
+### 타입 캐스팅 (Type Casting)
+
+`anyNumber`에 `10`을 넣었닫고 해서 `anyNumber` 가 `Int` 는 아닙니다. `Any` 프로토콜을 따르는 어떤 값이기 때문이죠
+
+```
+anyNumber + 1 // 컴파일 에러 !
+```
+
+이럴 때에는 `as`를 이용해서 다운 캐스팅 (Down Casting)을 합니다. `Any` 는 `Int` 보다 더 큰 범위이기 때문에, 작은 범위로 줄인다고 하여 '다운 캐스팅' 입니다.
+
+`Any` 는 `Int`뿐만 아니라 `String` 과 같은 전혀 엉뚱한 타입도 포합되어 있기 때문에 무조건 `Int` 로 변환되지 않습니다. 따라서 `as?` 를 사용해서 옵셔널을 취해야 합니다.
+
+```
+let number : Int? = anyNumber as? Int
+```
+
+옵셔널이기 때문에, 옵셔널 바인딩 문법도 사용할 수 있습니다. 실제로 이렇게 사용하는 경우가 굉장히 많습니다.
+
+```
+if let number = anyNumber as? Int {
+    print (number + 1)
+}
+```
+
+### 타입 검사
+
+타입 캐스팅까지는 필요 없고, 만약 어떤 값이 특정한 타입인지를 검사할 때에는 `is`를 사용할 수 있습니다.
+
+```
+print (anyNumber is Int) // true
+print (anyNumber is Any) // true
+print (anyNumber is String) // false
+print (anyString is String) // true
+```
+
+### Swift 주요 프로토콜
+
+Swift 에는 기본적으로 제공하는 기초적인 프로토콜들이 있스빈다. 알아두면 개발할 때 굉장히 유용하게 사용할 수 있습니다.
+
+#### CustomStringConvertible
+
+자기 자신을 표현하는 문자열을 정의합니다. `print()`, `String()` 또는 `"\()"` 에서 사용될 때의 값입니다. 
+`CustomStringConvertible` 의 정의는 아래와 같이 생겼습니다.
+
+```
+public protocol CustomStringConvertiblae {
+    /// A textual representation of 'se;f'.
+    public var description : String { get }
+}
+```
+
+ex)
+
+```
+struct Dog : CustomSTringConvertible {
+    var name : String
+    var description : String {
+        return "🐶 \(self.name)"
+    }
+}
+
+let dog = Dog (name : "찡코")
+print (dog) // 🐶 찡코
+```
+
+#### ExpressibleBy
+
+우리는 지금까지 `10` 은 `Int`, `"Hi"` 는 `String` 이라고 '당연하게' 인지하고 있었습니다. 하지만, 엄밀히 말하자면 `10` 은 원래 `Int (10)` 으로 선언되어야 하고, `"Hi"` 는 `String("Hi")` 로 선언되어야 합니다.
+
+이렇게, 생성자를 사용하지 않고도 생성할 수 있게 만드는 것을 리터럴 (Literal)이라고 합니다. 직역함녀 '문자 그대로'라는 뜻입니다.
+
+```
+let number = 10
+let string = "Hi"
+let array = ["a", "b", "c"]
+let dictionary = [
+    "key1" : "value1",
+    "key2" : "value2"
+]
+```
+
+이 리터럴을 가능하게 해주는 프로토콜이 있답니다. 바로 `ExpressibleByXXXLiteral` 인데요. `Int` 는 `ExpressibleByIntegerLiteral` 을, `String` 은 `ExpressibleByStringLiteral` 을, `Array` 는 `ExpressibleByArrayLiteral` 프로토콜을 따르고 있습니다.
+
+ex
+
+```
+struct DollarConverter : ExpressibleByIntegerLiteral {
+    typealias IntegerLiteralType = Int
+
+    let price = 1_177
+    var dollars : Int
+
+    init (integerLiteral value : IntegerLiteralType) {
+        self.dollars = value * self.price
+    }
+}
+
+let converter : DollarConverter = 100
+converter.dollars // 117700
+```
+
+### 익스텐션 (Extension)
+
+Swift에서는 이미 정의된 타입에 새로운 속성이나 메서드를 추가할 수 있습니다. 익스텐션 (Extension) 이라는 기능인데요. `extension` 키워드를 사용해서 정의할 수 있습니다.
+
+```
+extension String {
+    var length : Int {
+        return self.characters.count
+    }
+
+    func reservced() -> String {
+        return self.characters.reversed().map { String($0) }.joined(separator: "")
+    }
+}
+
+let str = "안녕하세요"
+str.length // 5
+str.reversed() // 요세하녕안
+```
