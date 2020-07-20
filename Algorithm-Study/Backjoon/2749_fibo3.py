@@ -1,10 +1,41 @@
-list_fib = [0, 1]
+def fibo(n):
+    array = [[1, 1], [1, 0]]
+    b = [[1, 0]]
 
-n = int (input ())
-temp = 2
-while temp != n + 1 :
-    list_fib.append(list_fib[0] + list_fib[1])
-    list_fib.pop(0)
-    temp += 1
+    fiboMatrix = multiArray(power(array, n), b)
 
-print (list_fib[-1] % 1000000)
+    return fiboMatrix[1][0]
+
+
+def multiArray(A, B):
+    result = []
+    for i in range(len(A)):
+        temp = []
+        for j in range(len(B[0])):
+            tempNum = 0
+            for k in range(len(B)):
+                tempNum += int(A[i][k]) * int(B[k][j])
+            temp.append(tempNum % 1000000)
+        result.append(temp)
+    return result
+
+
+def power(A, B):
+    if B == 1:
+        result = []
+        for i in range(len(A)):
+            temp = []
+            for j in range(len(A)):
+                temp.append(int(A[i][j]) % 1000000)
+            result.append(temp)
+        return result
+    if B == 2:
+        return multiArray(A, A)
+
+    if B % 2 == 0:
+        return power(multiArray(A, A), B // 2)
+    else:
+        return multiArray(A, power(A, B - 1))
+
+
+print(fibo(int(input())))
