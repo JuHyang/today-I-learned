@@ -1,31 +1,39 @@
-def solution(n, edges):
+def solution(n, edge):
+    answer = 0
+
     graph = dict()
-    distance = dict()
+    distance = [0] * (n + 1)
 
-    for edge in edges:
-        if min(edge) in graph:
-            graph[min(edge)].append(max(edge))
-            graph[min(edge)].sort()
-        else:
-            graph[min(edge)] = [max(edge)]
+    for numbers in edge:
+        a = numbers[0]
+        b = numbers[1]
 
-    distanceNum = 1
-    nextList = graph[1]
-    visited = [1]
+        (a, b) = (min(a, b), max(a, b))
 
-    while len(visited) < n:
-        temp = []
-        for node in nextList:
+        if a not in graph:
+            graph[a] = []
+        graph[a].append(b)
+        graph[a].sort()
+
+    print (graph)
+    visited = set()
+    visited.add(1)
+
+    queue = [1]
+    while len(queue) != 0:
+        if len(visited) == n:
+            break
+
+        current = queue.pop(0)
+        if current not in graph:
+            continue
+
+        for node in graph[current]:
             if node not in visited:
-                visited.append(node)
-                if distanceNum in distance:
-                    distance[distanceNum] += 1
-                else:
-                    distance[distanceNum] = 1
-                if node not in graph:
-                    continue
-                temp += graph[node]
-        nextList = temp
-        distanceNum = 2
+                visited.add(node)
+                queue.append(node)
+                distance[node] = distance[current] + 1
 
-    return distance[max(distance.keys())]
+    maxValue = max(distance)
+
+    return distance.count(maxValue)
