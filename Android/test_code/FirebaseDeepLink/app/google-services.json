@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "535645390643",
+    "firebase_url": "https://doubleslash-hob.firebaseio.com",
+    "project_id": "doubleslash-hob",
+    "storage_bucket": "doubleslash-hob.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535645390643:android:c17e1ee01651d828e66046",
+        "android_client_info": {
+          "package_name": "com.example.firebasedeeplink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "535645390643-vhh550mqaou3scqcn0rhtcmifpo9ooe6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCISvlRbUXi4p3R21qbJ-eqqVdSSSMWK1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535645390643-vhh550mqaou3scqcn0rhtcmifpo9ooe6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
