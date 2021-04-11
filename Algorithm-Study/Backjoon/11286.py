@@ -13,10 +13,13 @@ def insert(num ,array) :
         parentNum = array[parentIndex]
         currentNum = array[index]
 
-        if parentNum < currentNum :
+        if abs(parentNum) > abs(currentNum) :
             temp = currentNum
             array[index] = parentNum
             array[parentIndex] = temp
+        elif abs(parentNum) == abs(currentNum) and parentNum != currentNum :
+            array[index] = abs(parentNum)
+            array[parentIndex] = -abs(parentNum)
         else :
             break
 
@@ -35,23 +38,39 @@ def delete(array) :
 
         rightIndex = index * 2 + 2
         if rightIndex >= len(array) :
-            right = -1
+            right = 2 ** 32
         else :
             right = array[rightIndex]
 
         nextIndex = 0
-        if left >= right :
+        nextValue = -1
+        if abs(left) < abs(right) :
             nextIndex = leftIndex
-        else :
+            nextValue = left
+        elif abs(left) > abs(right) :
             nextIndex = rightIndex
+            nextValue = right
+        else :
+            if left == right :
+                nextIndex = leftIndex
+                nextValue = left
+            else :
+                if left < right :
+                    nextIndex = leftIndex
+                    nextValue = left
+                else :
+                    nextIndex = rightIndex
+                    nextValue = right
 
-        maxValue = max(left, right)
-
-        if currentNum >= maxValue :
+        if abs(currentNum) < abs(nextValue) :
             break
         
-        array[index] = maxValue
+        array[index] = nextValue
         array[nextIndex] = currentNum
+
+        if abs(currentNum) == abs(nextValue) and currentNum != nextValue :
+            array[index] = -abs(nextValue)
+            array[nextIndex] = abs(nextValue)
 
         index = nextIndex
 
