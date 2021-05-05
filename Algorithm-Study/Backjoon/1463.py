@@ -1,32 +1,28 @@
-result_list = [0, 0]
+import sys
 
-def func (x) :
-    global result_list
-    start = 2
-    while start <= x :
-        temp = 1
-        if start % 2 != 0 and start % 3 != 0 :
-            temp += result_list[start - 1]
-            result_list.append(temp)
-        else :
-            if start % 3 == 0 :
-                a = temp + result_list[int (start / 3)]
-                b = temp + result_list[start - 1]
-                temp = min (a, b)
-                result_list.append(temp)
-            elif start % 2 == 0:
-                a = temp + result_list[int (start / 2)]
-                b = temp + result_list[start - 1]
-                temp = min(a, b)
-                result_list.append(temp)
-        start += 1
-    return result_list[x]
+x = int (sys.stdin.readline())
 
-def main () :
-    x = int (input ())
+result = list()
 
-    result = func (x)
+result = [-1] * (x + 1)
 
-    print (result)
+for i in range (1, len(result)) :
+    if i == 1 or i == 2 or i == 3 :
+        result[i] = 1
+        continue
 
-main()
+    result[i] = result[i - 1]
+    if i % 2 == 0 :
+        result[i] = min (result[i], result[i // 2])
+    
+    if i % 3 == 0 :
+        result[i] = min (result[i], result[i // 3])
+
+    result[i] += 1
+
+if x == 1 :
+    print (0)
+elif x == 2 or x == 3 :
+    print (1)
+else :
+    print (result[x])
