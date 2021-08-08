@@ -4,9 +4,6 @@ class Solution {
             return ""
         }
 
-        println(p)
-        println(p.substring(1, p.length - 1))
-
         if (isValid(p)) {
             return p
         }
@@ -28,7 +25,7 @@ class Solution {
 
             u += char
             if (leftCount == rightCount) {
-                v = p.substring(i)
+                v = p.substring(i + 1)
 
                 break
             }
