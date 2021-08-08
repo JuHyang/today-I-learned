@@ -17,7 +17,7 @@ def solution(stones, k): # O(n log n) 풀이
                 count += 1
             else :
                 count = 0
-                
+                --
             if count >= k :
                 status = False
                 break
